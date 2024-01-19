@@ -1,0 +1,49 @@
+.group {
+  width: 100%;
+  border-top: 15px solid #b5f37c
+}
+
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #313338;
+  padding: 15px;
+  color: #fff;
+}
+
+.sum {
+  &::before {
+    content: '';
+    width: 0;
+    height: 100%;
+    border: 1px solid #fff;
+    margin: 0 15px;
+  }
+}
+
+.btnWrapper {
+  &::before {
+    content: '';
+    width: 0;
+    height: 100%;
+    border: 1px solid #fff;
+    margin: 0 15px;
+  }
+}
+
+.removeBtn {
+  border: none;
+  background-color: #ff7979;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+.addBtn {
+  border: none;
+  background-color: #96ed85;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+}

@@ -1,0 +1,46 @@
+.navbar {
+  background-color: #313338;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  width: 800px;
+  margin: 0 auto;
+  padding: 15px 0;
+}
+
+.logo {
+  font-size: 20px;
+}
+
+.tabs {
+  font-size: 20px;
+  &::before {
+    content: '';
+    width: 0;
+    height: 100%;
+    border: 1px solid #fff;
+    margin: 0 20px;
+  }
+}
+
+.btnWrapper {
+  &::before {
+    content: '';
+    width: 0;
+    height: 100%;
+    border: 1px solid #fff;
+    margin: 0 15px;
+  }
+}
+
+.addBtn {
+  border: none;
+  background-color: #96ed85;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 3px;
+}
