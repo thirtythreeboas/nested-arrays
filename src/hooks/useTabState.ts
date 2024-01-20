@@ -1,18 +1,19 @@
-/* eslint-disable */
-
-
 import {useState, useEffect} from 'react';
 
 export default function useTabState<T>(
-  initial_state: T,
+  initialState: T,
   id: string,
 ): [T, (newState: T) => void] {
-  const [localState, setLocalState] = useState<T>();
+  const [localState, setLocalState] = useState<T>(initialState);
+
+  const worker = new SharedWorker(
+    new URL('../worker/worker.ts', import.meta.url),
+  );
 
   const setTabState = (newState: T) => {
     setLocalState(newState);
     worker.port.postMessage({
-      type: 'set_state',
+      type: 'setState',
       id,
       state: newState,
     });
@@ -20,17 +21,18 @@ export default function useTabState<T>(
 
   useEffect(() => {
     worker.port.addEventListener('message', (e) => {
+      console.log('message', e);
       if (!e.data?.type) {
         return;
       }
 
       switch (e.data.type) {
-        case 'set_state': {
+        case 'setState': {
           if (e.data.id == id) {
             if (e.data.state) {
               setLocalState(e.data.state);
             } else {
-              setLocalState(initial_state);
+              setLocalState(initialState);
             }
           }
         }
@@ -40,7 +42,7 @@ export default function useTabState<T>(
     worker.port.start();
 
     worker.port.postMessage({
-      type: 'get_state',
+      type: 'getState',
       id,
     });
   }, []);
