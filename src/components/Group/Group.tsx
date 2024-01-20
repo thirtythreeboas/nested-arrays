@@ -1,4 +1,4 @@
-import {FC, useEffect, memo, useRef} from 'react';
+import {FC, memo, useRef} from 'react';
 import {SubGroup} from '@/components/SubGroup';
 import {IGroup} from '@/models/interfaces';
 import styles from './Group.module.scss';
@@ -12,9 +12,7 @@ interface GroupProps extends IGroup {
 export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
-  useEffect(() => {
-    console.log('Group');
-  }, []);
+
   render.current++;
   return (
     <div className={styles.group}>

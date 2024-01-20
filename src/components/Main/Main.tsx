@@ -1,4 +1,4 @@
-import {FC, useEffect, memo, useRef} from 'react';
+import {FC, memo, useRef} from 'react';
 import styles from './Main.module.scss';
 import {useAppSelector} from '@/hooks/hooks';
 import {Group} from '@/components/Group';
@@ -6,9 +6,7 @@ import {Group} from '@/components/Group';
 export const Main: FC = memo(() => {
   const {groups} = useAppSelector(({FORM}) => FORM);
   const render = useRef<number>(0);
-  useEffect(() => {
-    console.log('Main');
-  }, []);
+
   render.current++
   return (
     <div className={styles.main}>

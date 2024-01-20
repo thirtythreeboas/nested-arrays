@@ -2,6 +2,7 @@ import {FC} from 'react';
 import styles from './Navbar.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {addGroup} from '@/store/form/form';
+import useTabState from '@/hooks/useTabState';
 
 export const Navbar: FC = () => {
   const dispatch = useAppDispatch();

@@ -1,17 +1,17 @@
-import {FC, useEffect} from 'react';
+import {FC} from 'react';
 import {Main} from '@/components/Main';
 import {Navbar} from '@/components/Navbar';
-import {SubmitButton} from './components/Modal';
+import {SubmitButton} from '@/components/Modal';
+import useTabState from '@/hooks/useTabState';
 
 const App: FC = () => {
-  useEffect(() => {
-    console.log('App');
-    return () => {
-      localStorage.setItem('testSave', 'saved data on close');
-    };
-  }, []);
+  const [counter, setCounter] = useTabState<number>(0, 'counter');
+
   return (
     <>
+      <div>
+        <button onClick={() => setCounter(counter + 1)}>{counter}</button>
+      </div>
       <Navbar />
       <Main />
       <SubmitButton />

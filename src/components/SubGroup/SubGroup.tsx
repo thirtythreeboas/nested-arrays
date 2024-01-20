@@ -1,4 +1,4 @@
-import {FC, useEffect, memo, useRef} from 'react';
+import {FC, memo, useRef} from 'react';
 import {ISubGroup} from '@/models/interfaces';
 import {Product} from '@/components/Product';
 import styles from './SubGroup.module.scss';
@@ -13,9 +13,7 @@ interface SubGroupProps extends ISubGroup {
 export const SubGroup: FC<SubGroupProps> = memo(({subGroupNum, ...subGroup}) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
-  useEffect(() => {
-    console.log('SubGroup');
-  }, []);
+
   render.current++
   return (
     <div className={styles.subGroup}>

@@ -1,4 +1,4 @@
-import {FC, useEffect, memo, useRef} from 'react';
+import {FC, memo, useRef} from 'react';
 import {IProduct} from '@/models/interfaces';
 import {useAppDispatch} from '@/hooks/hooks';
 import {deleteProduct, setCount} from '@/store/form/form';
@@ -7,9 +7,6 @@ import styles from './Product.module.scss';
 export const Product: FC<IProduct> = memo((product) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
-  useEffect(() => {
-    console.log('Product');
-  }, []);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const fieldType = e.target.name === 'count' ? 'count' : 'price'
