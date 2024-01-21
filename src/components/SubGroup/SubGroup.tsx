@@ -5,6 +5,7 @@ import styles from './SubGroup.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {deleteSubGroup} from '@/store/form/form';
 import {addProduct} from '@/store/form/form';
+import {handleTwoDecimalPlaces} from '@/utils/handleTwoDecimalPlaces';
 
 interface SubGroupProps extends ISubGroup {
   subGroupNum: number;
@@ -19,7 +20,7 @@ export const SubGroup: FC<SubGroupProps> = memo(({subGroupNum, ...subGroup}) => 
     <div className={styles.subGroup}>
       <div className={styles.header}>
         <div>{`Подгруппа ${subGroupNum}`}</div>
-        <div className={styles.sum}>{`Сумма ${subGroup.sum}`}</div>
+        <div className={styles.sum}>{`Сумма ${handleTwoDecimalPlaces(subGroup.sum)}`}</div>
         <div className={styles.btnWrapper}>
           <button
             className={styles.addBtn}

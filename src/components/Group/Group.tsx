@@ -4,6 +4,7 @@ import {IGroup} from '@/models/interfaces';
 import styles from './Group.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {deleteGroup, addSubGroup} from '@/store/form/form';
+import {handleTwoDecimalPlaces} from '@/utils/handleTwoDecimalPlaces';
 
 interface GroupProps extends IGroup {
   groupNum: number;
@@ -18,7 +19,7 @@ export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
     <div className={styles.group}>
       <div className={styles.header}>
         <div>{`Группа ${groupNum}`}</div>
-        <div className={styles.sum}>{`Сумма ${group.sum}`}</div>
+        <div className={styles.sum}>{`Сумма ${handleTwoDecimalPlaces(group.sum)}`}</div>
         <div className={styles.btnWrapper}>
           <button
             className={styles.addBtn}
