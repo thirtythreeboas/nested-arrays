@@ -1,11 +1,11 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {NameSpace} from '@/const';
-import {IForm, IProductSum} from '@/models/interfaces';
+import {IFormState, IProductSum} from '@/models/interfaces';
 import {data} from '@/mock/data';
 import {calculateTotalSum} from '@/utils/calculateTotalSum';
 
-const initialState: IForm = {
-  sum: 0,
+const initialState: IFormState = {
+  sum: 486,
   groups: data,
   isSubmitted: false,
   hasUnsubmittedData: true,
@@ -16,34 +16,43 @@ export const form = createSlice({
   initialState,
   reducers: {
     deleteGroup: (state, action: PayloadAction<number | string>) => {
+      const handleGroupDelete = state.groups.filter((group) => group.id !== action.payload);
+      const result = calculateTotalSum(handleGroupDelete);
       return {
         ...state,
-        groups: state.groups.filter((group) => group.id !== action.payload),
+        groups: result.groups,
+        sum: result.sum,
       };
     },
     deleteSubGroup: (state, action: PayloadAction<number | string>) => {
+      const handleSubGroupDelete = state.groups.map((group) => ({
+        ...group,
+        subGroups: group.subGroups.filter(
+          (subGroup) => subGroup.id !== action.payload,
+        ),
+      }));
+      const result = calculateTotalSum(handleSubGroupDelete)
       return {
         ...state,
-        groups: state.groups.map((group) => ({
-          ...group,
-          subGroups: group.subGroups.filter(
-            (subGroup) => subGroup.id !== action.payload,
-          ),
-        })),
+        groups: result.groups,
+        sum: result.sum,
       };
     },
     deleteProduct: (state, action: PayloadAction<number | string>) => {
+      const handleProductDelete = state.groups.map((group) => ({
+        ...group,
+        subGroups: group.subGroups.map((subGroup) => ({
+          ...subGroup,
+          products: subGroup.products.filter(
+            (product) => product.id !== action.payload,
+          ),
+        })),
+      }));
+      const result = calculateTotalSum(handleProductDelete)
       return {
         ...state,
-        groups: state.groups.map((group) => ({
-          ...group,
-          subGroups: group.subGroups.map((subGroup) => ({
-            ...subGroup,
-            products: subGroup.products.filter(
-              (product) => product.id !== action.payload,
-            ),
-          })),
-        })),
+        groups: result.groups,
+        sum: result.sum,
       };
     },
     addGroup: (state) => {
@@ -107,10 +116,11 @@ export const form = createSlice({
       };
     },
     setCount: (state, action: PayloadAction<IProductSum>) => {
-      const groupsTotalSum = calculateTotalSum({groups: state.groups, action: action.payload});
+      const calcSumResult = calculateTotalSum(state.groups, action.payload);
       return {
         ...state,
-        groups: groupsTotalSum,
+        groups: calcSumResult.groups,
+        sum: calcSumResult.sum,
       };
     },
     handleSubmissionState: (state) => {
@@ -123,7 +133,7 @@ export const form = createSlice({
       if (state.isSubmitted) {
         localStorage.removeItem('form');
       } else {        
-        const form = btoa(encodeURIComponent(JSON.stringify(state.groups)));
+        const form = btoa(encodeURIComponent(JSON.stringify({groups: state.groups, sum: state.sum})));
         localStorage.setItem('form', form);
       }
     },
@@ -131,9 +141,12 @@ export const form = createSlice({
       const hasFormValue = localStorage.getItem('form');
       if (hasFormValue) {
         const decodedValue = decodeURIComponent(atob(hasFormValue));
+        const groups = JSON.parse(decodedValue).groups;
+        const sum = JSON.parse(decodedValue).sum;
         return {
           ...state,
-          groups: JSON.parse(decodedValue),
+          groups,
+          sum,
         }
       }
     },

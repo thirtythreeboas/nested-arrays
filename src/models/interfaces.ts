@@ -21,6 +21,9 @@ export interface IGroup {
 export interface IForm {
   sum: number;
   groups: IGroup[];
+}
+
+export interface IFormState extends IForm {
   isSubmitted: boolean;
   hasUnsubmittedData: boolean;
 }

@@ -1,23 +1,18 @@
-import {IGroup, IProductSum} from '@/models/interfaces';
+import {IForm, IGroup, IProductSum} from '@/models/interfaces';
 
-interface sumProps {
-  groups: IGroup[];
-  action: IProductSum;
-}
-
-export const calculateTotalSum = (data: sumProps) => {
-  const productResult: IGroup[] = data.groups.map((group) => ({
+export const calculateTotalSum = (groups: IGroup[], action: IProductSum | null = null): IForm => {
+  const productResult: IGroup[] = !action ? groups : groups.map((group) => ({
     ...group,
     subGroups: group.subGroups.map((subGroup) => ({
       ...subGroup,
       products: subGroup.products.map((product) => {
-        if (product.id === data.action.id) {
-          const field = data.action.type === 'count' ? 'count' : 'price';
-          const argument = data.action.type === 'count' ? 'price' : 'count';
+        if (action && product.id === action.id) {
+          const field = action.type === 'count' ? 'count' : 'price';
+          const argument = action.type === 'count' ? 'price' : 'count';
           return {
             ...product,
-            [field]: data.action.value,
-            sum: data.action.value * product[argument],
+            [field]: action.value,
+            sum: action.value * product[argument],
           };
         }
         return product;
@@ -37,6 +32,7 @@ export const calculateTotalSum = (data: sumProps) => {
     group.sum = sum;
     return group;
   });
+  const formResult: number = groupResult.reduce((a, b) => a + b.sum, 0)
 
-  return groupResult;
+  return {groups: groupResult, sum: formResult};
 };
