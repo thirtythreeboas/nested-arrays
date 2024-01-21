@@ -7,6 +7,8 @@ import {calculateTotalSum} from '@/utils/calculateTotalSum';
 const initialState: IForm = {
   sum: 0,
   groups: data,
+  isSubmitted: false,
+  hasUnsubmittedData: true,
 };
 
 export const form = createSlice({
@@ -17,13 +19,6 @@ export const form = createSlice({
       return {
         ...state,
         groups: state.groups.filter((group) => group.id !== action.payload),
-        // ...state,
-        // form: {
-        //   ...state.form,
-        //   groups: state.form.groups.filter(
-        //     (group) => group.id !== action.payload,
-        //   ),
-        // },
       };
     },
     deleteSubGroup: (state, action: PayloadAction<number | string>) => {
@@ -118,6 +113,30 @@ export const form = createSlice({
         groups: groupsTotalSum,
       };
     },
+    handleSubmissionState: (state) => {
+      return {
+        ...state,
+        isSubmitted: !state.isSubmitted,
+      }
+    },
+    setLocalStorage: (state) => {
+      if (state.isSubmitted) {
+        localStorage.removeItem('form');
+      } else {        
+        const form = btoa(encodeURIComponent(JSON.stringify(state.groups)));
+        localStorage.setItem('form', form);
+      }
+    },
+    restoreUnsubmittedValue: (state) => {
+      const hasFormValue = localStorage.getItem('form');
+      if (hasFormValue) {
+        const decodedValue = decodeURIComponent(atob(hasFormValue));
+        return {
+          ...state,
+          groups: JSON.parse(decodedValue),
+        }
+      }
+    },
   },
 });
 
@@ -129,6 +148,9 @@ export const {
   addSubGroup,
   addProduct,
   setCount,
+  handleSubmissionState,
+  setLocalStorage,
+  restoreUnsubmittedValue,
 } = form.actions;
 
 export default form.reducer;

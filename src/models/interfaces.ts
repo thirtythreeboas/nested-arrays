@@ -21,6 +21,8 @@ export interface IGroup {
 export interface IForm {
   sum: number;
   groups: IGroup[];
+  isSubmitted: boolean;
+  hasUnsubmittedData: boolean;
 }
 
 export interface IProductSum {
