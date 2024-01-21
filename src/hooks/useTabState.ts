@@ -44,7 +44,7 @@ export default function useTabState() {
       );
       bc.postMessage({action: 'close', id: pageId});
     };
-    console.log(totalNumberOfTabs, pageId);
+
     bc.addEventListener('message', handleMessage);
     window.addEventListener('unload', handleTabClosed);
 
