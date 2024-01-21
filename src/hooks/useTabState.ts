@@ -20,7 +20,9 @@ export default function useTabState() {
       switch (e.data.action) {
         case 'add': {
           if (!totalNumberOfTabs.includes(e.data.id)) {
-            setTotalNumberOfTabs((prevState) => [...prevState, e.data.id]);
+            setTotalNumberOfTabs((prevState) =>
+              [...prevState, e.data.id].sort((a, b) => a - b),
+            );
             bc.postMessage({action: 'add', id: pageId});
           }
           break;
@@ -40,7 +42,7 @@ export default function useTabState() {
       setTotalNumberOfTabs((prevState) =>
         prevState.filter((id) => id !== pageId),
       );
-      bc.postMessage({ action: 'close', id: pageId});
+      bc.postMessage({action: 'close', id: pageId});
     };
     console.log(totalNumberOfTabs, pageId);
     bc.addEventListener('message', handleMessage);
@@ -52,5 +54,8 @@ export default function useTabState() {
     };
   }, [pageId, totalNumberOfTabs]);
 
-  return [totalNumberOfTabs.indexOf(pageId) + 1, totalNumberOfTabs.length];
+  const tabIndex = totalNumberOfTabs.indexOf(pageId) + 1;
+  const totalTabs = totalNumberOfTabs.length;
+
+  return [tabIndex, totalTabs];
 }
