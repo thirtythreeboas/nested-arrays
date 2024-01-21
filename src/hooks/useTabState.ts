@@ -1,51 +1,40 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 
-export default function useTabState<T>(
-  initialState: T,
-  id: string,
-): [T, (newState: T) => void] {
-  const [localState, setLocalState] = useState<T>(initialState);
-
+export default function useTabState(id: number): [number, number, () => void] {
+  const [orderNumber, setOrderNumber] = useState<number>(1);
+  const [totalNumberOfTabs, setTotalNumberOfTabs] = useState<number>(1);
+  
   const worker = new SharedWorker(
     new URL('../worker/worker.ts', import.meta.url),
   );
 
-  const setTabState = (newState: T) => {
-    setLocalState(newState);
+  const setPageId = useCallback(() => {
+    console.log('useCallback', id);
     worker.port.postMessage({
-      type: 'setState',
+      type: 'SET_STATE',
       id,
-      state: newState,
     });
-  };
-
+  }, [])
+  console.log('initial hook', orderNumber);
   useEffect(() => {
+    setPageId();
     worker.port.addEventListener('message', (e) => {
-      console.log('message', e);
-      if (!e.data?.type) {
-        return;
-      }
-
       switch (e.data.type) {
-        case 'setState': {
-          if (e.data.id == id) {
-            if (e.data.state) {
-              setLocalState(e.data.state);
-            } else {
-              setLocalState(initialState);
-            }
-          }
+        case 'SET_ORDER_NUMBER': {
+          setOrderNumber(e.data.index);
+          break;
         }
+        case 'SET_TABS_LENGTH': {
+          setTotalNumberOfTabs(e.data.length);
+          break
+        }
+        default:
+          break;
       }
     });
 
     worker.port.start();
-
-    worker.port.postMessage({
-      type: 'getState',
-      id,
-    });
   }, []);
-
-  return [localState, setTabState];
+  console.log('changed hook', orderNumber);
+  return [orderNumber, totalNumberOfTabs, setPageId];
 }
