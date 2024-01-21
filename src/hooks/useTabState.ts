@@ -10,24 +10,45 @@ export default function useTabState() {
   const broadcastPageId = () => {
     setPageId(newPageId);
     setTotalNumberOfTabs((prevState) => [...prevState, newPageId]);
-    bc.postMessage({id: newPageId});
+    bc.postMessage({action: 'add', id: newPageId});
   };
 
   useEffect(() => {
     if (pageId === 0) broadcastPageId();
 
     const handleMessage = (e: MessageEvent) => {
-      console.log(e.data.id, totalNumberOfTabs);
-      if (!totalNumberOfTabs.includes(e.data.id)) {
-        setTotalNumberOfTabs((prevState) => [...prevState, e.data.id]);
-        bc.postMessage({id: pageId});
+      switch (e.data.action) {
+        case 'add': {
+          if (!totalNumberOfTabs.includes(e.data.id)) {
+            setTotalNumberOfTabs((prevState) => [...prevState, e.data.id]);
+            bc.postMessage({action: 'add', id: pageId});
+          }
+          break;
+        }
+        case 'close': {
+          setTotalNumberOfTabs((prevState) =>
+            prevState.filter((id) => id !== e.data.id),
+          );
+          break;
+        }
+        default:
+          break;
       }
     };
 
+    const handleTabClosed = () => {
+      setTotalNumberOfTabs((prevState) =>
+        prevState.filter((id) => id !== pageId),
+      );
+      bc.postMessage({ action: 'close', id: pageId});
+    };
+    console.log(totalNumberOfTabs, pageId);
     bc.addEventListener('message', handleMessage);
+    window.addEventListener('unload', handleTabClosed);
 
     return () => {
       bc.removeEventListener('message', handleMessage);
+      window.removeEventListener('unload', handleTabClosed);
     };
   }, [pageId, totalNumberOfTabs]);
 
