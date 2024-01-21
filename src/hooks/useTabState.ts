@@ -1,40 +1,35 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useState, useEffect} from 'react';
 
-export default function useTabState(id: number): [number, number, () => void] {
-  const [orderNumber, setOrderNumber] = useState<number>(1);
-  const [totalNumberOfTabs, setTotalNumberOfTabs] = useState<number>(1);
-  
-  const worker = new SharedWorker(
-    new URL('../worker/worker.ts', import.meta.url),
-  );
+const bc = new BroadcastChannel('tabs-state');
 
-  const setPageId = useCallback(() => {
-    console.log('useCallback', id);
-    worker.port.postMessage({
-      type: 'SET_STATE',
-      id,
-    });
-  }, [])
-  console.log('initial hook', orderNumber);
+export default function useTabState() {
+  const [pageId, setPageId] = useState<number>(0);
+  const [totalNumberOfTabs, setTotalNumberOfTabs] = useState<number[]>([]);
+
+  const newPageId = new Date().getTime();
+  const broadcastPageId = () => {
+    setPageId(newPageId);
+    setTotalNumberOfTabs((prevState) => [...prevState, newPageId]);
+    bc.postMessage({id: newPageId});
+  };
+
   useEffect(() => {
-    setPageId();
-    worker.port.addEventListener('message', (e) => {
-      switch (e.data.type) {
-        case 'SET_ORDER_NUMBER': {
-          setOrderNumber(e.data.index);
-          break;
-        }
-        case 'SET_TABS_LENGTH': {
-          setTotalNumberOfTabs(e.data.length);
-          break
-        }
-        default:
-          break;
-      }
-    });
+    if (pageId === 0) broadcastPageId();
 
-    worker.port.start();
-  }, []);
-  console.log('changed hook', orderNumber);
-  return [orderNumber, totalNumberOfTabs, setPageId];
+    const handleMessage = (e: MessageEvent) => {
+      console.log(e.data.id, totalNumberOfTabs);
+      if (!totalNumberOfTabs.includes(e.data.id)) {
+        setTotalNumberOfTabs((prevState) => [...prevState, e.data.id]);
+        bc.postMessage({id: pageId});
+      }
+    };
+
+    bc.addEventListener('message', handleMessage);
+
+    return () => {
+      bc.removeEventListener('message', handleMessage);
+    };
+  }, [pageId, totalNumberOfTabs]);
+
+  return [totalNumberOfTabs.indexOf(pageId) + 1, totalNumberOfTabs.length];
 }

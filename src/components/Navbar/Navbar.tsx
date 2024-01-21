@@ -1,13 +1,11 @@
-import {FC, useRef} from 'react';
+import {FC} from 'react';
 import styles from './Navbar.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {addGroup} from '@/store/form/form';
 import useTabState from '@/hooks/useTabState';
 
 export const Navbar: FC = () => {
-  const pageId = useRef<number>(0);
-  pageId.current = new Date().getTime()
-  const [tabIndex, totalNumberOfTabs] = useTabState(pageId.current);
+  const [tabIndex, totalNumberOfTabs] = useTabState();
 
   const dispatch = useAppDispatch();
   return (
