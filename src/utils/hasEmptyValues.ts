@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import {IGroup} from '@/models/interfaces';
 
 export const hasEmptyValues = (groups: IGroup[]): boolean => {

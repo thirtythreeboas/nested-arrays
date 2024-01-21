@@ -5,7 +5,11 @@ import {deleteProduct, setCount} from '@/store/form/form';
 import {handleTwoDecimalPlaces} from '@/utils/handleTwoDecimalPlaces';
 import styles from './Product.module.scss';
 
-export const Product: FC<IProduct> = memo((product) => {
+interface ProductProps {
+  product: IProduct;
+}
+
+export const Product: FC<ProductProps> = memo(({product}) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
 
@@ -26,7 +30,7 @@ export const Product: FC<IProduct> = memo((product) => {
           className={styles.input}
           type='number'
           name='price'
-          step=".01"
+          step='.01'
           value={handleTwoDecimalPlaces(product.price) || ''}
           onChange={(e) => handleInput(e)}
         />
@@ -41,9 +45,12 @@ export const Product: FC<IProduct> = memo((product) => {
           onChange={(e) => handleInput(e)}
         />
       </div>
-      <div className={styles.detail}>{`Сумма: ${handleTwoDecimalPlaces(product.sum)}`}</div>
+      <div
+        className={styles.detail}
+      >{`Сумма: ${handleTwoDecimalPlaces(product.sum)}`}</div>
       <div className={styles.btnWrapper}>
         <button
+          type='button'
           className={styles.removeBtn}
           onClick={() => dispatch(deleteProduct(product.id))}
         >

@@ -1,6 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {NameSpace} from '@/const';
-import {IFormState, IProductSum} from '@/models/interfaces';
+import {IForm, IFormState, IProductSum} from '@/models/interfaces';
 import {data} from '@/mock/data';
 import {calculateTotalSum} from '@/utils/calculateTotalSum';
 
@@ -16,7 +16,9 @@ export const form = createSlice({
   initialState,
   reducers: {
     deleteGroup: (state, action: PayloadAction<number | string>) => {
-      const handleGroupDelete = state.groups.filter((group) => group.id !== action.payload);
+      const handleGroupDelete = state.groups.filter(
+        (group) => group.id !== action.payload,
+      );
       const result = calculateTotalSum(handleGroupDelete);
       return {
         ...state,
@@ -31,7 +33,7 @@ export const form = createSlice({
           (subGroup) => subGroup.id !== action.payload,
         ),
       }));
-      const result = calculateTotalSum(handleSubGroupDelete)
+      const result = calculateTotalSum(handleSubGroupDelete);
       return {
         ...state,
         groups: result.groups,
@@ -48,7 +50,7 @@ export const form = createSlice({
           ),
         })),
       }));
-      const result = calculateTotalSum(handleProductDelete)
+      const result = calculateTotalSum(handleProductDelete);
       return {
         ...state,
         groups: result.groups,
@@ -127,27 +129,30 @@ export const form = createSlice({
       return {
         ...state,
         isSubmitted: !state.isSubmitted,
-      }
+      };
     },
     setLocalStorage: (state) => {
       if (state.isSubmitted) {
         localStorage.removeItem('form');
-      } else {        
-        const form = btoa(encodeURIComponent(JSON.stringify({groups: state.groups, sum: state.sum})));
-        localStorage.setItem('form', form);
+      } else {
+        const formData = btoa(
+          encodeURIComponent(
+            JSON.stringify({groups: state.groups, sum: state.sum}),
+          ),
+        );
+        localStorage.setItem('form', formData);
       }
     },
     restoreUnsubmittedValue: (state) => {
       const hasFormValue = localStorage.getItem('form');
       if (hasFormValue) {
         const decodedValue = decodeURIComponent(atob(hasFormValue));
-        const groups = JSON.parse(decodedValue).groups;
-        const sum = JSON.parse(decodedValue).sum;
+        const {groups, sum} = JSON.parse(decodedValue) as IForm;
         return {
           ...state,
           groups,
           sum,
-        }
+        };
       }
     },
   },

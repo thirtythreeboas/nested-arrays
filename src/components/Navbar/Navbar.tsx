@@ -1,5 +1,4 @@
 import {FC, useEffect} from 'react';
-import styles from './Navbar.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {
   addGroup,
@@ -7,8 +6,10 @@ import {
   restoreUnsubmittedValue,
 } from '@/store/form/form';
 import useTabState from '@/hooks/useTabState';
+import styles from './Navbar.module.scss';
 
 export const Navbar: FC = () => {
+  const dispatch = useAppDispatch();
   const [tabIndex, totalNumberOfTabs] = useTabState();
 
   useEffect(() => {
@@ -25,9 +26,8 @@ export const Navbar: FC = () => {
     return () => {
       window.removeEventListener('unload', storeState);
     };
-  }, []);
+  }, [dispatch]);
 
-  const dispatch = useAppDispatch();
   return (
     <nav className={styles.navbar}>
       <div className={styles.wrapper}>
@@ -37,6 +37,7 @@ export const Navbar: FC = () => {
         >{`Вкладка ${tabIndex} из ${totalNumberOfTabs}`}</div>
         <div className={styles.btnWrapper}>
           <button
+            type='button'
             className={styles.addBtn}
             onClick={() => dispatch(addGroup())}
           >

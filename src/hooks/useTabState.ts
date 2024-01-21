@@ -19,7 +19,7 @@ export default function useTabState() {
     const handleMessage = (e: MessageEvent) => {
       switch (e.data.action) {
         case 'add': {
-          if (!totalNumberOfTabs.includes(e.data.id)) {
+          if (!totalNumberOfTabs.includes(e.data.id as number)) {
             setTotalNumberOfTabs((prevState) =>
               [...prevState, e.data.id].sort((a, b) => a - b),
             );
@@ -52,6 +52,7 @@ export default function useTabState() {
       bc.removeEventListener('message', handleMessage);
       window.removeEventListener('unload', handleTabClosed);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageId, totalNumberOfTabs]);
 
   const tabIndex = totalNumberOfTabs.indexOf(pageId) + 1;

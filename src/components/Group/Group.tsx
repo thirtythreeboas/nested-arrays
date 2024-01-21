@@ -1,16 +1,17 @@
 import {FC, memo, useRef} from 'react';
 import {SubGroup} from '@/components/SubGroup';
 import {IGroup} from '@/models/interfaces';
-import styles from './Group.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
 import {deleteGroup, addSubGroup} from '@/store/form/form';
 import {handleTwoDecimalPlaces} from '@/utils/handleTwoDecimalPlaces';
+import styles from './Group.module.scss';
 
-interface GroupProps extends IGroup {
+interface GroupProps {
+  group: IGroup;
   groupNum: number;
 }
 
-export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
+export const Group: FC<GroupProps> = memo(({group, groupNum}) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
 
@@ -19,9 +20,12 @@ export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
     <div className={styles.group}>
       <div className={styles.header}>
         <div>{`Группа ${groupNum}`}</div>
-        <div className={styles.sum}>{`Сумма ${handleTwoDecimalPlaces(group.sum)}`}</div>
+        <div
+          className={styles.sum}
+        >{`Сумма ${handleTwoDecimalPlaces(group.sum)}`}</div>
         <div className={styles.btnWrapper}>
           <button
+            type='button'
             className={styles.addBtn}
             onClick={() => dispatch(addSubGroup(group.id))}
           >
@@ -30,6 +34,7 @@ export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
         </div>
         <div className={styles.btnWrapper}>
           <button
+            type='button'
             className={styles.removeBtn}
             onClick={() => dispatch(deleteGroup(group.id))}
           >
@@ -46,7 +51,11 @@ export const Group: FC<GroupProps> = memo(({ groupNum, ...group }) => {
         >{`Renders: ${render.current}`}</span>
       </div>
       {group.subGroups.map((subGroup, index) => (
-        <SubGroup {...subGroup} subGroupNum={index + 1} key={subGroup.id} />
+        <SubGroup
+          subGroup={subGroup}
+          subGroupNum={index + 1}
+          key={subGroup.id}
+        />
       ))}
     </div>
   );

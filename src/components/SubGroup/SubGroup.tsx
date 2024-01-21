@@ -1,28 +1,31 @@
 import {FC, memo, useRef} from 'react';
 import {ISubGroup} from '@/models/interfaces';
 import {Product} from '@/components/Product';
-import styles from './SubGroup.module.scss';
 import {useAppDispatch} from '@/hooks/hooks';
-import {deleteSubGroup} from '@/store/form/form';
-import {addProduct} from '@/store/form/form';
+import {deleteSubGroup, addProduct} from '@/store/form/form';
 import {handleTwoDecimalPlaces} from '@/utils/handleTwoDecimalPlaces';
+import styles from './SubGroup.module.scss';
 
-interface SubGroupProps extends ISubGroup {
+interface SubGroupProps {
+  subGroup: ISubGroup;
   subGroupNum: number;
 }
 
-export const SubGroup: FC<SubGroupProps> = memo(({subGroupNum, ...subGroup}) => {
+export const SubGroup: FC<SubGroupProps> = memo(({subGroup, subGroupNum}) => {
   const dispatch = useAppDispatch();
   const render = useRef<number>(0);
 
-  render.current++
+  render.current++;
   return (
     <div className={styles.subGroup}>
       <div className={styles.header}>
         <div>{`Подгруппа ${subGroupNum}`}</div>
-        <div className={styles.sum}>{`Сумма ${handleTwoDecimalPlaces(subGroup.sum)}`}</div>
+        <div
+          className={styles.sum}
+        >{`Сумма ${handleTwoDecimalPlaces(subGroup.sum)}`}</div>
         <div className={styles.btnWrapper}>
           <button
+            type='button'
             className={styles.addBtn}
             onClick={() => dispatch(addProduct(subGroup.id))}
           >
@@ -31,6 +34,7 @@ export const SubGroup: FC<SubGroupProps> = memo(({subGroupNum, ...subGroup}) => 
         </div>
         <div className={styles.btnWrapper}>
           <button
+            type='button'
             className={styles.removeBtn}
             onClick={() => dispatch(deleteSubGroup(subGroup.id))}
           >
@@ -47,7 +51,7 @@ export const SubGroup: FC<SubGroupProps> = memo(({subGroupNum, ...subGroup}) => 
         >{`Renders: ${render.current}`}</span>
       </div>
       {subGroup.products.map((product) => (
-        <Product {...product} key={product.id} />
+        <Product product={product} key={product.id} />
       ))}
     </div>
   );
