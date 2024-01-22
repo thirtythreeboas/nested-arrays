@@ -59,6 +59,7 @@ module.exports = {
     'no-console': 'off',
     'react/prop-types': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
+    'react/jsx-props-no-spreading': 'off',
   },
   settings: {
     'import/resolver': {
