@@ -45,26 +45,13 @@ export const Product: FC<ProductProps> = memo(({product}) => {
           onChange={(e) => handleInput(e)}
         />
       </div>
-      <div
-        className={styles.detail}
-      >{`Сумма: ${handleTwoDecimalPlaces(product.sum)}`}</div>
+      <div className={styles.detail}>{`Сумма: ${handleTwoDecimalPlaces(product.sum)}`}</div>
       <div className={styles.btnWrapper}>
-        <button
-          type='button'
-          className={styles.removeBtn}
-          onClick={() => dispatch(deleteProduct(product.id))}
-        >
+        <button type='button' className={styles.removeBtn} onClick={() => dispatch(deleteProduct(product.id))}>
           Удалить продукт
         </button>
       </div>
-      <span
-        style={{
-          color: 'red',
-          fontSize: '16px',
-          margin: '0 10px',
-          fontWeight: 600,
-        }}
-      >{`Renders: ${render.current}`}</span>
+      <span className={styles.render}>{`Renders: ${render.current}`}</span>
     </div>
   );
 });

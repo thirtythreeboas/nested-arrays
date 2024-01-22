@@ -23,15 +23,13 @@ export const SubmitButton: FC = () => {
   return (
     <div className={styles.wrapper}>
       <button
-        type='button'
+        type='submit'
         className={styles.submit}
         style={{backgroundColor: error ? '#ff7979' : '#313338'}}
         onClick={handleSubmit}
       >
         {error ? (
-          <span className={styles.error}>
-            Не должно быть пустых значений или значений равных нулю!
-          </span>
+          <span className={styles.error}>Не должно быть пустых значений или значений равных нулю!</span>
         ) : (
           'Лог в консоль'
         )}

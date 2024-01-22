@@ -20,35 +20,18 @@ export const SubGroup: FC<SubGroupProps> = memo(({subGroup, subGroupNum}) => {
     <div className={styles.subGroup}>
       <div className={styles.header}>
         <div>{`Подгруппа ${subGroupNum}`}</div>
-        <div
-          className={styles.sum}
-        >{`Сумма ${handleTwoDecimalPlaces(subGroup.sum)}`}</div>
+        <div className={styles.sum}>{`Сумма ${handleTwoDecimalPlaces(subGroup.sum)}`}</div>
         <div className={styles.btnWrapper}>
-          <button
-            type='button'
-            className={styles.addBtn}
-            onClick={() => dispatch(addProduct(subGroup.id))}
-          >
+          <button type='button' className={styles.addBtn} onClick={() => dispatch(addProduct(subGroup.id))}>
             Добавить продукт
           </button>
         </div>
         <div className={styles.btnWrapper}>
-          <button
-            type='button'
-            className={styles.removeBtn}
-            onClick={() => dispatch(deleteSubGroup(subGroup.id))}
-          >
+          <button type='button' className={styles.removeBtn} onClick={() => dispatch(deleteSubGroup(subGroup.id))}>
             Удалить подгруппу
           </button>
         </div>
-        <span
-          style={{
-            color: 'red',
-            fontSize: '16px',
-            margin: '0 10px',
-            fontWeight: 600,
-          }}
-        >{`Renders: ${render.current}`}</span>
+        <span className={styles.render}>{`Renders: ${render.current}`}</span>
       </div>
       {subGroup.products.map((product) => (
         <Product product={product} key={product.id} />
